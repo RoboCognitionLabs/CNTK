@@ -355,17 +355,25 @@ namespace CNTK
         // Copy data to the CPU device if required.
         const ValueType *valueData;
         const MaskKind* maskData = nullptr;
+        NDArrayViewPtr cpuArrayView;
+        NDMaskPtr cpuMask;
         if (Device() != DeviceDescriptor::CPUDevice())
         {
-            valueData = m_data->DeepClone(DeviceDescriptor::CPUDevice())->DataBuffer<ValueType>();
-            if (m_mask != nullptr)
-                maskData = m_mask->DeepClone(DeviceDescriptor::CPUDevice())->DataBuffer();
+            cpuArrayView = Data()->DeepClone(DeviceDescriptor::CPUDevice(), true);
+            valueData = cpuArrayView->DataBuffer<ValueType>();
+            if (Mask() != nullptr)
+            {
+                cpuMask = Mask()->DeepClone(DeviceDescriptor::CPUDevice());
+                maskData = cpuMask->DataBuffer();
+            }
         }
         else
         {
-            valueData = m_data->DataBuffer<ValueType>();
-            if (m_mask != nullptr)
-                maskData = m_mask->DataBuffer();
+            cpuArrayView = Data();
+            cpuMask = Mask();
+            valueData = Data()->DataBuffer<ValueType>();
+            if (Mask() != nullptr)
+                maskData = Mask()->DataBuffer();
         }
 
         auto sampleSize = sampleShape.TotalSize();

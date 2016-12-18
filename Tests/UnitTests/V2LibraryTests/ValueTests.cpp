@@ -147,6 +147,7 @@ void FillDenseMatrixData(vector<vector<ElementType>>& databuf,  const vector<siz
 template <typename ElementType>
 void ValueCreationNoNDMaskTest(const DeviceDescriptor device, bool readOnly)
 {
+    //Todo: test numberOfSequences == 1: no batch access, need to adapt checkShape(), CheckValue()
     size_t numberOfSequences = 5;
     size_t seqLen = 4;
     vector<size_t> dims{3, 2};
